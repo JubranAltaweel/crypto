@@ -39,16 +39,16 @@ func Decrypt(encodedMessage, password string, outfile string) (string, error) {
 	key := keyDigest(password)
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return "cipher", err
 	}
 
 	ciphertext, err := base64.StdEncoding.DecodeString(encodedMessage)
 	if err != nil {
-		return "", err
+		return "chipher1", err
 	}
 
 	if len(ciphertext) < aes.BlockSize {
-		return "", err //The ciphertext is too short
+		return "cipher2", err //The ciphertext is too short
 	}
 
 	mode := cipher.NewCBCDecrypter(block, key[:aes.BlockSize])
@@ -56,13 +56,13 @@ func Decrypt(encodedMessage, password string, outfile string) (string, error) {
 
 	ciphertext, err = PKCS7UnPadding(ciphertext, aes.BlockSize)
 	if err != nil {
-		return "", err
+		return "cipher3", err
 	}
 
 	if outfile != "" {
 		err = os.WriteFile(outfile, ciphertext, 0644)
 		if err != nil {
-			return "", nil
+			return "cipher4", nil
 		}
 	}
 
